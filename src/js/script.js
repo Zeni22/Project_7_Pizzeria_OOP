@@ -53,27 +53,47 @@
   };
 
   class Product {
-    constructor() {
+    constructor(id, data) {
       const thisProduct = this;
+      
+      thisProduct.id = id;
+      thisProduct.data = data;
+
+      thisProduct.renderInMenu();
 
       console.log('new Product:', thisProduct) ;
+    }
+    renderInMenu(){
+      const thisProduct = this;
+      
+      const generatedHTML = templates.menuProduct(thisProduct.data);          // generate HTML based on template
+      thisProduct.element = utils.createDOMFromHTML(generatedHTML);           // create element using utils.createElementFromHTML
+      const menuContainer = document.querySelector(select.containerOf.menu);  // find menu container
+      menuContainer.appendChild(thisProduct.element);                         // add element to menu
     }
   }
 
   const app = {
     initMenu (){
-      const testProduct = new Product();
-      console.log('testProduct:', testProduct);
-    },
+      // const thisApp = this;
+      // console.log('thisApp.data:', thisApp.data);
+      // const testProduct = new Product();
+      // console.log('testProduct:', testProduct);
+      const thisApp = this;
+      console.log('thisApp.data:', thisApp.data);
 
+      for(let productData in thisApp.data.products){
+        new Product(productData, thisApp.data.products[productData]); // interuje po zestawie parametrow obiektu, iteruje jak po tablicy i podstawia zmienna pod [productData]
+      }
+
+    },
 
     initData: function(){
       const thisApp = this;
-    
-      thisApp.data = dataSource;
+
+      thisApp.data = dataSource; // "." odwolanie do klucza albo wlasciwosci  w obiekcie
     },
     
-
     init: function(){
       const thisApp = this;
       console.log('*** App starting ***');
