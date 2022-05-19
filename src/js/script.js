@@ -83,10 +83,10 @@
         const activeProduct = document.querySelector(select.all.menuProductsActive);            /* find active product (product that has active class) */
         
         if (activeProduct != null && activeProduct != thisProduct.element) {                    /* if there is active product and it's not thisProduct.element, remove class active from it */
-          activeProduct.classList.remove('active');
+          activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
         }
-        
-        thisProduct.element.classList.toggle('active');                                         /* toggle active class on thisProduct.element */
+
+        thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);                                         /* toggle active class on thisProduct.element */
       });
     }
   }
