@@ -150,32 +150,32 @@
 
     processOrder() {
       const thisProduct = this;
-      const formData = utils.serializeFormToObject(thisProduct.form);         // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
-      let price = thisProduct.data.price;                                     // set price to default price
+      const formData = utils.serializeFormToObject(thisProduct.form);           // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
+      let price = thisProduct.data.price;                                       // set price to default price
 
-      for (let paramId in thisProduct.data.params) {                           // for every category (param)...
-        const param = thisProduct.data.params[paramId];                       // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
+      for (let paramId in thisProduct.data.params) {                             // for every category (param)...
+        const param = thisProduct.data.params[paramId];                          // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
 
-        for (let optionId in param.options) {                                  // for every option in this category
-          const option = param.options[optionId];                             // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
+        for (let optionId in param.options) {                                     // for every option in this category
+          const option = param.options[optionId];                                 // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
-          if (optionSelected) {                                                // check if there is param with a name of paramId in formData and if it includes optionId
-            if (option.default != true) {                                      // check if the option is not default
-              price = price + option.price;                                   // add option price to price variable
+          if (optionSelected) {                                                   // check if there is param with a name of paramId in formData and if it includes optionId
+            if (option.default != true) {                                         // check if the option is not default
+              price = price + option.price;                                       // add option price to price variable
             }
             else {
-              if (option.default == true) {                                    // check if the option is default
-                price = price - option.price;                                 // reduce price variable
+              if (option.default == true) {                                        // check if the option is default
+                price = price - option.price;                                      // reduce price variable
               }
             }
           }
-          const classImg = '.' + paramId + '-' + optionId;                       //[IMG] Find/build  image with class  .paramId-optionId 
+          const classImg = '.' + paramId + '-' + optionId;                        //[IMG] Find/build  image with class  .paramId-optionId 
           let optionImage = thisProduct.imageWrapper.querySelector(classImg);
-          if (optionImage != null) {                                             //[IMG] If found
-            if (optionSelected) {                                                 //[IMG] If option selected
-              optionImage.classList.add(classNames.menuProduct.imageVisible);    //[IMG] Add class active to show img
+          if (optionImage != null) {                                               //[IMG] If found
+            if (optionSelected) {                                                  //[IMG] If option selected
+              optionImage.classList.add(classNames.menuProduct.imageVisible);      //[IMG] Add class active to show img
             }
-            else {                                                               // [IMG] If not selected remove class active to hide img
+            else {                                                                 // [IMG] If not selected remove class active to hide img
               optionImage.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
@@ -260,12 +260,12 @@
       if (thisWidget.value
         !== newValue && !isNaN(newValue)
         && newValue >= settings.amountWidget.defaultMin
-        && newValue <= settings.amountWidget.defaultMax) {                // add validation
+        && newValue <= settings.amountWidget.defaultMax) {                    // add validation
         thisWidget.value = newValue;
         thisWidget.announce();
       }
 
-      thisWidget.input.value = thisWidget.value;                        // value prior to change , if incorrect validated by if resets to previous            
+      thisWidget.input.value = thisWidget.value;                              // value prior to change , if incorrect validated by if resets to previous            
     }
 
     initActions() {
@@ -332,14 +332,14 @@
       const thisApp = this;
 
       for (let productData in thisApp.data.products) {
-        new Product(productData, thisApp.data.products[productData]);           // interuje po zestawie parametrow obiektu, iteruje jak po tablicy i podstawia zmienna pod [productData]
+        new Product(productData, thisApp.data.products[productData]);                   // interuje po zestawie parametrow obiektu, iteruje jak po tablicy i podstawia zmienna pod [productData]
       }
     },
 
     initData: function () {
       const thisApp = this;
 
-      thisApp.data = dataSource;                                              // "." odwolanie do klucza albo wlasciwosci  w obiekcie
+      thisApp.data = dataSource;                                                        // "." odwolanie do klucza albo wlasciwosci  w obiekcie
     },
 
     initCart: function () {
@@ -351,11 +351,6 @@
 
     init: function () {
       const thisApp = this;
-      console.log('*** App starting ***');
-      console.log('thisApp:', thisApp);
-      console.log('classNames:', classNames);
-      console.log('settings:', settings);
-      console.log('templates:', templates);
 
       thisApp.initData();
       thisApp.initMenu();
