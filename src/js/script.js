@@ -144,6 +144,7 @@
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
     }
 
@@ -180,7 +181,8 @@
           }
         }
       }
-      price *= thisProduct.amountWidget.value;
+      thisProduct.priceSingle = price;                                           // assignes value of price to object thisProduct with property price single (this property is created by linking with object)
+      price *= thisProduct.amountWidget.value;                                   // multiply
       thisProduct.priceElem.innerHTML = price;                                   // update calculated price in the HTML
     }
 
@@ -191,6 +193,45 @@
       thisProduct.amountWidgetElem.addEventListener('updated', function () {      // event fully defined by developer , hence no net to prevent default action as it doesent exist
         thisProduct.processOrder();
       });
+    }
+
+    addToCart() {
+      const thisProduct = this;
+      app.cart.add(thisProduct.prepareCartProduct());
+    }
+
+    prepareCartProduct() {
+      const thisProduct = this;
+      const productSummary = {
+        id: thisProduct.id,
+        name: thisProduct.data.name,
+        amount: thisProduct.amountWidget.value,
+        priceSingle: thisProduct.priceSingle,
+        price: thisProduct.priceSingle * thisProduct.amountWidget.value,
+        params: thisProduct.prepareCartProductParams(),
+      };
+      return productSummary;
+    }
+
+    prepareCartProductParams() {
+      const thisProduct = this;
+
+      const formData = utils.serializeFormToObject(thisProduct.form);           // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
+      const params = {};
+
+      for (let paramId in thisProduct.data.params) {                            // for every category (param)...
+        const param = thisProduct.data.params[paramId];                         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
+        params[paramId] = { label: param.label, options: {} };                  // !!!! create category param in params const eg. params = { ingredients: { name: 'Ingredients', options: {}}}
+
+        for (let optionId in param.options) {                                    // for every option in this category
+          const option = param.options[optionId];                               // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+          if (optionSelected) {                                                 // check if there is param with a name of paramId in formData and if it includes optionId
+            params[paramId].options[optionId] = option.label;                    // !!! option is selected!
+          }
+        }
+      }
+      return params;
     }
   }
 
@@ -254,12 +295,10 @@
   class Cart {
     constructor(element) {
       const thisCart = this;
-
       thisCart.products = [];
 
       thisCart.getElements(element);
       thisCart.initActions();
-      console.log('new Cart', thisCart);
     }
 
     getElements(element) {
@@ -267,24 +306,30 @@
       thisCart.dom = {};
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = element.querySelector(select.cart.productList);
     }
 
     initActions() {
       const thisCart = this;
 
       thisCart.dom.toggleTrigger.addEventListener('click', function (event) {
-        event.preventDefault;
+        event.preventDefault();
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);             // toggle active class 
-        console.log('WITHOUT CLASS LIST', thisCart.dom.wrapper);
-        console.log('WITH CLASS LIST', thisCart.dom.wrapper.classList);
       });
+    }
+
+    add(menuProduct) {
+      const thisCart = this;
+      const generatedHTML = templates.cartProduct(menuProduct);                         // generate HTML based on cart product  template with product object with 
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);                      // create element using utils.createElementFromHTML
+
+      thisCart.dom.productList.appendChild(generatedDOM);                               // add DOM element to thisCart.dom.productList
     }
   }
 
   const app = {
     initMenu() {
       const thisApp = this;
-      console.log('thisApp.data:', thisApp.data);
 
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);           // interuje po zestawie parametrow obiektu, iteruje jak po tablicy i podstawia zmienna pod [productData]
