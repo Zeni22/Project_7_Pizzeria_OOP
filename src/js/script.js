@@ -327,13 +327,9 @@
         thisCart.update();
       });
 
-
-      // works until this 
-      thisCart.dom.productList.addEventListener('remove', function () {
-        thisCart.remove();
+      thisCart.dom.productList.addEventListener('remove', function (event) {
+        thisCart.remove(event.detail.cartProduct);
       });
-
-
     }
 
     add(menuProduct) {
@@ -361,12 +357,20 @@
         thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
       }
 
-      for (let priceElemInArray of thisCart.dom.totalPrice) {
-        priceElemInArray.innerHTML = thisCart.totalPrice;
+      for (let priceElemInArray of thisCart.dom.totalPrice) {                         // thisCart.dom.totalPrice[0].innerHTML = thisCart.totalPrice;     // !!!! pojedyczne adresowanie elementow , nieefektywne
+        priceElemInArray.innerHTML = thisCart.totalPrice;                             // thisCart.dom.totalPrice[1].innerHTML = thisCart.totalPrice;
       }
-      // thisCart.dom.totalPrice[0].innerHTML = thisCart.totalPrice;     // !!!! Czy moge zaadresowac dwa welmenty tabilicy w jednum prypisaniu?!
-      // thisCart.dom.totalPrice[1].innerHTML = thisCart.totalPrice;
+    }
 
+    remove(event) {
+      const thisCart = this;
+      let productElement = event.dom.wrapper;
+      productElement.remove();
+
+      const productIndex = thisCart.products.indexOf(event);
+      thisCart.products.splice(productIndex, 1);
+
+      thisCart.update();
     }
   }
 
@@ -428,7 +432,6 @@
       thisCartProduct.dom.remove.addEventListener('click', function (event) {
         event.preventDefault();
         thisCartProduct.remove();
-        console.log('dupa', thisCartProduct.remove);
       });
     }
   }
@@ -465,5 +468,4 @@
   };
 
   app.init();
-
 }
