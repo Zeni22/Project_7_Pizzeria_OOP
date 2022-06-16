@@ -364,7 +364,7 @@
 
     remove(event) {
       const thisCart = this;
-      let productElement = event.dom.wrapper;
+      const productElement = event.dom.wrapper;
       productElement.remove();
 
       const productIndex = thisCart.products.indexOf(event);
